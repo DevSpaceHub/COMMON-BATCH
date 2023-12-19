@@ -1,0 +1,78 @@
+spring:
+  application:
+    name: COMMON-BATCH
+
+  profiles:
+    active: local
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  batch:
+    job:
+      enabled: false
+    jdbc:
+      initialize-schema: never
+      table-prefix: COMMON_BATCH_
+
+logging:
+  config: classpath:log4j2/log4j2-${spring.profiles.active}.xml
+
+---
+spring:
+  config:
+    activate:
+      on-profile: local
+  application:
+    name: COMMON-BATCH-Local
+
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: true
+  jpa:
+    defer-datasource-initialization: false #true
+    hibernate:
+      ddl-auto: none #create
+
+schedule:
+  sample:
+
+
+logging:
+  level:
+    org.hibernate:
+      SQL: debug
+      type: trace
+    org.springframework.web.reactive.function.client.ExchangeFunctions: DEBUG
+
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: true
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+    defer-datasource-initialization: false #true
+
+logging:
+  level:
+    org.hibernate:
+      SQL: error
